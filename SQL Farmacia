@@ -1,0 +1,117 @@
+
+CREATE TABLE Fabricante(
+idFabrincante	INT PRIMARY KEY,
+nome			VARCHAR(250)
+);
+
+CREATE TABLE Categoria(
+idCategoria INT PRIMARY KEY,
+nome		VARCHAR(250)
+);
+
+CREATE TABLE Produto(
+idProduto					INT PRIMARY KEY NOT NULL,
+idCategoria int FOREIGN		KEY REFERENCES Categoria(idCategoria),
+idFabrincante int FOREIGN	KEY REFERENCES Fabricante(idFabrincante),
+Nome						VARCHAR(250) NOT NULL,
+preco						FLOAT NOT NULL
+);
+
+CREATE TABLE USUARIO(
+idusuario		integer,
+nome			varchar(250) not null,
+sexo			varchar(1),
+dtnasceimento	date,
+telefone		varchar(16),
+email			varchar(250),
+senha			varchar(250),
+CONSTRAINT usuario_pk	PRIMARY KEY(Idusuario)
+);
+ 
+CREATE TABLE ENDERECO(
+idendereco		INTEGER NOT NULL,
+idusuario		INTEGER NOT NULL,
+endereco		VARCHAR(250) NOT NULL,
+numero			INTEGER,
+complemento		VARCHAR(250),
+bairro			VARCHAR(250),
+cidade			VARCHAR(250),
+estado			VARCHAR(250),
+ednprincipal	VARCHAR(1),
+
+CONSTRAINT endereco_pk	PRIMARY KEY(idendereco,idusuario),
+CONSTRAINT endereco_usuario_fk FOREIGN KEY (idusuario) REFERENCES usuario(idusuario)
+);
+
+CREATE TABLE VENDA(
+idvenda		INTEGER	PRIMARY KEY,
+idusuario	INTEGER,
+dtvenda		DATE,
+statusvenda	VARCHAR(1),
+valortotal	FLOAT,
+
+CONSTRAINT VENDA_usuario_fk FOREIGN KEY (idusuario) REFERENCES usuario(idusuario)
+);
+--drop table RECEITA_MEDICA
+CREATE TABLE RECEITA_MEDICA(
+idreceitamedica	INTEGER,
+idvenda			INTEGER,
+crm				VARCHAR(250),
+numero			INTEGER,
+imagem			image	,
+
+CONSTRAINT receitaMedica_pk	PRIMARY KEY(idreceitamedica,idvenda),
+CONSTRAINT venda_receitamedica_fk FOREIGN KEY (idvenda) REFERENCES venda(idvenda)
+);
+
+CREATE TABLE CARRINHO(
+idcarrinho	INTEGER,
+idusuario	INTEGER,
+sessao		VARCHAR(200),
+
+CONSTRAINT carrinho_pk	PRIMARY KEY(idcarrinho),
+CONSTRAINT carrinho_usuario_fk FOREIGN KEY (idusuario) REFERENCES usuario(idusuario)
+);
+
+CREATE TABLE PAGAMENTO (
+idpagamento	INTEGER,
+idvenda		INTEGER,
+tipo		VARCHAR(1),
+numcartao	VARCHAR(100),
+numboleto	VARCHAR(100),
+valor		FLOAT,
+
+CONSTRAINT pagamento_pk	PRIMARY KEY(idpagamento,idvenda),
+CONSTRAINT pagamento_venda_fk FOREIGN KEY (idvenda) REFERENCES venda(idvenda)
+);
+
+CREATE TABLE PRODUTO_CARRINHO(
+idproduto_carrinho	INTEGER,
+idcarrinho			INTEGER,
+idproduto			INTEGER,
+quantidade			INTEGER,
+valor				FLOAT,
+
+CONSTRAINT produtocarrinho_pk	PRIMARY KEY(idproduto_carrinho,idcarrinho,idproduto),
+CONSTRAINT produtocarrinho_carrinho_fk FOREIGN KEY (idcarrinho) REFERENCES carrinho(idcarrinho),
+CONSTRAINT produtocarrinho_produto_fk FOREIGN KEY (idproduto) REFERENCES produto(idproduto)
+);
+
+CREATE TABLE PRODUTO_VENDA(
+idprodutovenda		INTEGER,
+idvenda				INTEGER,
+idproduto			INTEGER,
+quantidade			INTEGER,
+valorunit			FLOAT,
+valortotal			FLOAT,
+desconto			FLOAT,
+
+CONSTRAINT produtovenda_pk	PRIMARY KEY(idprodutovenda,idvenda,idproduto),
+CONSTRAINT produtovenda_venda_fk FOREIGN KEY (idvenda) REFERENCES venda(idvenda),
+CONSTRAINT produtovenda_produto_fk FOREIGN KEY (idproduto) REFERENCES produto(idproduto)
+);
+
+
+
+
+
